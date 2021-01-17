@@ -11,6 +11,3 @@ Prob_FTAG<-table(FTAG)/length(FTAG)
 ##Inciso 3
 #Columnas con los goles del equipo visitante y las filas los goles del equipo local
 Prob_Conjunta<-table(as.data.frame(cbind(FTHG,FTAG)))/length(FTAG)
-Contraer
-
-

@@ -1,8 +1,9 @@
 library(dplyr)
 library(ggplot2)
+library(rsample)
 
 ##Enviar al directorio de trabajo
-setwd("C:/Users/jtoba/Documents/BEDU/R/Sesion2Reto3/Postwork")
+setwd("C:/Users/infrabyte/Documents/Github/Fase2-Bedu/Sesion4/files")
 
 ##Descargar los archivos a utilizar
 
@@ -27,15 +28,49 @@ FTHG<-data2$FTHG
 FTAG<-data2$FTAG
 
 ##La probabilidad de que un equipo de casa anote x goles
+#Prob_FTHG<-table(FTHG)/length(FTHG)
+
+##La probabilidad de que un equipo visitante anote x goles
+#Prob_FTHG<-table(FTAG)/length(FTAG)
+
+##La probabilidad de que un equpo de casa anote x1 goles y el equipo visitante anote x2 goles
+#Columnas con los goles del equipo visitante y las filas los goles del equipo local
+Prob_Conjunta<-table(as.data.frame(cbind(FTHG,FTAG)))/length(FTAG)
+
+
 Prob_FTHG<-table(FTHG)/length(FTHG)
 
 ##La probabilidad de que un equipo visitante anote x goles
 Prob_FTAG<-table(FTAG)/length(FTAG)
 
 ##La probabilidad de que un equpo de casa anote x1 goles y el equipo visitante anote x2 goles
-#Columnas con los goles del equipo visitante y las filas los goles del equipo local
-Prob_Conjunta<-table(as.data.frame(cbind(FTHG,FTAG)))/length(FTAG)
+#Columnas con los goles del equipo visitante y las filas los goles del 
+a<-function(n){n/Prob_FTHG}
 
+Prob_Conjunta_2<-apply(Prob_Conjunta, 2, a)
+
+b<-function(n){n/Prob_FTAG}
+
+Prob_Conjunta_2<-apply(Prob_Conjunta_2, 1, b)
+
+
+as.data.frame(as.table(Prob_Conjunta_2))
+
+
+set.seed(4892)
+
+conjunto_boot = c()
+
+for(i in 1:1000){
+    conjunto_boot[i] <- mean(Prob_Conjunta_2[sample(1:length(Prob_Conjunta_2), 100, replace = T)])
+}
+
+qplot(Prob_Conjunta_2, geom = "histogram") + geom_vline(xintercept = mean(Prob_Conjunta_2))
+
+qplot(conjunto_boot, geom = "histogram") + geom_vline(xintercept = mean(conjunto_boot))
+
+
+View(conjunto_boot)
 
 #Gráfico de barras de goles de casa (probablidad marginal)
 Inciso1 <- as.data.frame(Prob_FTHG)
@@ -63,3 +98,5 @@ Inciso3 %>%
     labs(x="Goles equipo de casa", y="Goles equipo visitante", fill="Probabilidad", 
     title= "Probabilidad Conjunta: Goles de casa vs. Goles visitante")+
     scale_fill_gradient(low="red",  high="green")
+
+

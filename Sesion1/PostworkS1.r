@@ -1,6 +1,6 @@
-Datos<-read.csv("https://www.football-data.co.uk/mmz4281/1920/SP1.csv", header=T)
-FTHG<-Datos$FTHG
-FTAG<-Datos$FTAG
+Datos <- read.csv("https://www.football-data.co.uk/mmz4281/1920/SP1.csv", header=T)
+FTHG <- Datos$FTHG
+FTAG <- Datos$FTAG
 
 ##Inciso 1
 Prob_FTHG<-table(FTHG)/length(FTHG)
